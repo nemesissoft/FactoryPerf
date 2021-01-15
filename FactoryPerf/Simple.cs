@@ -10,7 +10,7 @@ namespace FactoryPerf
         object Create(string name);
     }
 
-    [Auto.AutoFactory(typeof(IComponent))]
+    //[Auto.AutoFactory(typeof(IComponent))]
     public sealed partial class GeneratedFactory : IFactory
     {
         public object Create(string name)
