@@ -5,7 +5,21 @@ using System.Reflection;
 
 namespace FactoryPerf
 {
-    sealed class SimpleFactory
+    public interface IFactory
+    {
+        object Create(string name);
+    }
+
+    [Auto.AutoFactory(typeof(IComponent))]
+    public sealed partial class GeneratedFactory : IFactory
+    {
+        public object Create(string name)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public sealed class SimpleFactory : IFactory
     {
         private readonly Dictionary<string, Type> _types;
 
@@ -27,13 +41,13 @@ namespace FactoryPerf
         }
     }
 
-    sealed class GeneratedDictionaryFactory
+    public sealed class ManualGeneratedDictionaryFactory : IFactory
     {
         private readonly Dictionary<string, Func<object>> _typeCreators;
 
-        private GeneratedDictionaryFactory(Dictionary<string, Func<object>> types = null) => _typeCreators = types ?? new(StringComparer.OrdinalIgnoreCase);
-        
-        public static GeneratedDictionaryFactory GetDefault() =>
+        private ManualGeneratedDictionaryFactory(Dictionary<string, Func<object>> types = null) => _typeCreators = types ?? new(StringComparer.OrdinalIgnoreCase);
+
+        public static ManualGeneratedDictionaryFactory GetDefault() =>
             new(
                 new Dictionary<string, Func<object>>(StringComparer.OrdinalIgnoreCase)
                 {
@@ -448,7 +462,7 @@ namespace FactoryPerf
         }
     }
 
-    sealed class GeneratedFactory
+    public sealed class ManualGeneratedFactory : IFactory
     {
         public object Create(string name) =>
             name switch

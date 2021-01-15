@@ -1,5 +1,9 @@
-﻿namespace FactoryPerf
+﻿using System;
+using System.Diagnostics;
+
+namespace FactoryPerf
 {
+
     /*string.Join(Environment.NewLine,
                 Enumerable.Range(1, 100).Select(i=>i.ToString("000")).Select(s=>$"public class A{s} : IComponent {{ }}")
                     )*/
@@ -7,7 +11,11 @@
     {
     }
 
+    //[ImplementationName("ABC")]
     public class A001 : IComponent { }
+
+    //[ImplementationName("DEF")]
+    //[AlternativeRegistration(AlternativeRegistrations.FullTypeName)]
     public class A002 : IComponent { }
     public class A003 : IComponent { }
     public class A004 : IComponent { }
