@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 
-#nullable enable
+//#nullable enable
 
 namespace AutoFactory
 {
@@ -148,13 +148,15 @@ namespace Auto
 
         private bool ShouldProcessType(TypeDeclarationSyntax type, INamedTypeSymbol autoAttributeSymbol, out INamedTypeSymbol namedTypeSymbol)
         {
+            /*static AttributeData? GetAttribute(ISymbol typeSymbol, ISymbol attributeSymbol) =>
+                typeSymbol.GetAttributes().FirstOrDefault(ad =>
+                    ad?.AttributeClass is { } @class && @class.Equals(attributeSymbol, SymbolEqualityComparer.Default));*/
+
             namedTypeSymbol = null;
             return false;
         }
 
-        static AttributeData? GetAttribute(ISymbol typeSymbol, ISymbol attributeSymbol) =>
-            typeSymbol.GetAttributes().FirstOrDefault(ad =>
-                ad?.AttributeClass is { } @class && @class.Equals(attributeSymbol, SymbolEqualityComparer.Default));
+        
 
         class AutoFactorySyntaxReceiver : ISyntaxReceiver
         {
@@ -162,6 +164,7 @@ namespace Auto
 
             public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
             {
+                //Debugger.Launch();
                 if (syntaxNode is TypeDeclarationSyntax tds && tds.AttributeLists.Count > 0)
                     CandidateTypes.Add(tds);
             }

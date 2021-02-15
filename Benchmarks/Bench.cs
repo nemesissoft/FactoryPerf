@@ -2,6 +2,8 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Diagnosers;
 
+using Example;
+
 namespace FactoryPerf
 {
     /*12 items:
@@ -12,11 +14,12 @@ namespace FactoryPerf
 | GeneratedDictionary |  1,538.1 ns |   7.34 ns |   6.87 ns |  0.13 | 0.3815 |     - |     - |   2.34 KB |
 
     400 items:
-|              Method |      Mean |     Error |    StdDev | Ratio |  Gen 0 |  Gen 1 | Gen 2 | Allocated | Timer/Op | BranchInstructions/Op | BranchMispredictions/Op |
-|-------------------- |----------:|----------:|----------:|------:|-------:|-------:|------:|----------:|---------:|----------------------:|------------------------:|
-|              Simple | 57.593 us | 0.7159 us | 1.0932 us |  1.00 | 1.4648 | 0.3662 |     - |   9.69 KB |       66 |                48,404 |                     354 |
-|           Generated |  7.645 us | 0.0667 us | 0.0624 us |  0.13 | 1.5335 |      - |     - |    9.4 KB |        8 |                 4,876 |                      90 |
-| GeneratedDictionary | 12.293 us | 0.0804 us | 0.0752 us |  0.21 | 1.5259 |      - |     - |    9.4 KB |       11 |                 6,724 |                     145 |
+|                   Method |      Mean |     Error |    StdDev | Ratio |  Gen 0 |  Gen 1 | Gen 2 | Allocated | Timer/Op | BranchInstructions/Op | BranchMispredictions/Op |
+|------------------------- |----------:|----------:|----------:|------:|-------:|-------:|------:|----------:|---------:|----------------------:|------------------------:|
+|                   Simple | 59.076 us | 0.2595 us | 0.2301 us |  1.00 | 1.5259 | 0.0610 |     - |   9.69 KB |       67 |                48,638 |                     353 |
+|                Generated |  8.271 us | 0.0381 us | 0.0338 us |  0.14 | 1.5335 |      - |     - |    9.4 KB |        9 |                 5,192 |                      97 |
+| CaseInsensitiveGenerated | 10.434 us | 0.0723 us | 0.0641 us |  0.18 | 1.5259 |      - |     - |    9.4 KB |       12 |                 7,604 |                     157 |
+|      GeneratedDictionary | 14.137 us | 0.1305 us | 0.1221 us |  0.24 | 1.5259 |      - |     - |    9.4 KB |       13 |                 7,702 |                     162 |
      */
 
     [MemoryDiagnoser]
@@ -82,6 +85,18 @@ namespace FactoryPerf
             return o.GetHashCode();
         }
 
+        private static readonly ManualCaseInsensitiveGeneratedFactory ManualCaseInsensitiveGeneratedFactory = new();
+        [Benchmark]
+        public int CaseInsensitiveGenerated()
+        {
+            object o = new A001();
+            for (int i = 0; i < _classNames.Length; i++)
+                o = ManualCaseInsensitiveGeneratedFactory.Create(_classNames[i]);
+
+            return o.GetHashCode();
+        }
+
+
         private static readonly ManualGeneratedDictionaryFactory ManualGeneratedDictionaryFactory = ManualGeneratedDictionaryFactory.GetDefault();
         [Benchmark]
         public int GeneratedDictionary()
@@ -91,6 +106,6 @@ namespace FactoryPerf
                 o = ManualGeneratedDictionaryFactory.Create(_classNames[i]);
 
             return o.GetHashCode();
-        }
+        }       
     }
 }

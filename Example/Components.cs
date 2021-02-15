@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace FactoryPerf
+namespace Example
 {
 
     /*string.Join(Environment.NewLine,
